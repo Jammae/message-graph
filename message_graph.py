@@ -116,7 +116,7 @@ if __name__ == '__main__':
 
     url = args.url
     cookies = args.cookies or 'cookies.txt'
-    outfile = args.output or 'graph.png'
+    outfile = args.output
 
     grapher = Grapher(url, cookies, outfile)
     grapher.read_page()
