@@ -1,4 +1,5 @@
 import time
+import argparse
 import requests
 import http.cookiejar
 
@@ -104,9 +105,16 @@ class Grapher:
 
 
 if __name__ == '__main__':
-    url = 'https://bbs.io-tech.fi/threads/linuxin-vuosi-1994.377127/'
-    cookies = 'io-tech.fi_cookies.txt'
-    outfile = 'graph.png'
+    parser = argparse.ArgumentParser(description='Create a graph from a thread')
+    parser.add_argument('url', type=str, help='thread URL')
+    parser.add_argument('-c', '--cookies', metavar='filename', help='cookies file')
+    parser.add_argument('-o', '--output', metavar='filename', help='output graph filename')
+
+    args = parser.parse_args()
+
+    url = args.url
+    cookies = args.cookies or 'cookies.txt'
+    outfile = args.output or 'graph.png'
+
     grapher = Grapher(url, cookies, outfile)
-    
     grapher.read_page()
