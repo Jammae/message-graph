@@ -49,6 +49,8 @@ class Grapher:
         for message in messages:
             self.message_count += 1
             poster_name = message.find('a', class_ ='username').text
+            if len(poster_name) > 13:
+                poster_name = poster_name[0:9] + '...'
             self.posters.append(poster_name)
 
             reactions = message.find('a', class_ = "reactionsBar-link")
@@ -94,8 +96,8 @@ class Grapher:
             tick.set_rotation(45)
 
         if self.likes:
-            likestext = '\n'.join([x[0] + ' ' + str(x[1]) + ' tykkäystä' for x in self.likes.most_common(self.top_liked)])
-            ax.annotate(f'Tykätyimmät postaajat:\n\n{likestext}', xy=(300, 350), xycoords='figure pixels')
+            likestext = '\n'.join([f'{x[0]:13}: {str(x[1]):2}' for x in self.likes.most_common(self.top_liked)])
+            ax.annotate(f'Tykätyimmät postaajat:\n\n{likestext}', xy=(0.5, 0.8), xycoords='figure fraction', family='monospace', fontsize=9)
 
         if self.outfile:
             ax.figure.savefig(self.outfile, dpi=100, bbox_inches='tight')
