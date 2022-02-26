@@ -41,7 +41,6 @@ class Grapher:
         else:
             self.count_messages(soup, last_page=True)
         
-
     def count_messages(self, soup, last_page):
         print(f'Page {self.page_count}')
 
@@ -97,7 +96,19 @@ class Grapher:
 
         if self.likes:
             likestext = '\n'.join([f'{x[0]:13}: {str(x[1]):2}' for x in self.likes.most_common(self.top_liked)])
-            ax.annotate(f'Tykätyimmät postaajat:\n\n{likestext}', xy=(0.5, 0.8), xycoords='figure fraction', family='monospace', fontsize=9)
+
+            ratio = []
+            for poster in set(self.posters):
+                if poster in self.likes:
+                    ratio.append((poster, round(self.likes[poster]/Counter(self.posters)[poster],2)))
+       
+            df_ratio = pd.DataFrame(ratio, columns=['poster', 'ratio'])
+            df_ratio.sort_values(by='ratio', ascending=False, inplace=True)
+            ratiotext = ''
+            for idx, row in df_ratio.head(3).iterrows():
+                ratiotext = ratiotext + f"{row['poster']:13}: {row['ratio']}\n"
+
+        ax.annotate(f'Tykätyimmät postaajat:\n(tykkäysten määrä)\n\n{likestext}\n\nLaatukeskustelijat:\n(tykkäyksiä per postaus)\n\n{ratiotext}', xy=(0.5, 0.5), xycoords='figure fraction', family='monospace', fontsize=9)
 
         if self.outfile:
             ax.figure.savefig(self.outfile, dpi=100, bbox_inches='tight')
